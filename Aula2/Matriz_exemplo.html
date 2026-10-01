@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta charset="UTF-8">
+ <style type='text/css'>
+      @page {
+          margin: 20px;
+      }
+
+      html,
+      body {
+          padding: 20px;
+          font-family: Roboto, Arial, system, sans-serif;
+          font-size: 12pt;
+          line-height: 1.5;
+      }
+
+      img {
+          display: block;
+          max-width: 100%;
+          height: auto;
+          margin: 20px auto;
+          border: 0.5px solid #000;
+      }
+
+      a {
+          text-decoration: underline;
+          color: blue;
+      }
+
+      video,
+      img {
+          max-width: 100%;
+      }
+
+      pre {
+          max-width: 100%;
+          overflow: auto;
+          background-color: #f5f5f5;
+          padding: 10px;
+          border: 1px solid #ddd;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+      }
+
+      table,
+      th,
+      td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding: 4px;
+      }
+
+      th,
+      td {
+          vertical-align: top;
+      }
+
+      .header_no_underline {
+          text-decoration: none;
+          color: black;
+      }
+
+      h1,
+      h2 {
+          border-bottom: 2px solid #636363;
+          padding-bottom: 4px;
+      }
+
+      blockquote {
+          padding: 0 12px;
+          border-left: 3.5px solid #c4c4c4;
+          margin: 12px 0;
+          color: #555;
+          font-style: italic;
+      }
+
+      .task-list-item {
+          list-style-type: none;
+          text-indent: -1.5em;
+          padding-left: 1.5em;
+      }
+</style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous">
+
+<!-- The loading of KaTeX is deferred to speed up page rendering -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+          ],
+          throwOnError : false
+        });
+    });
+</script>
+ </head>
+<body>
+ <h1 id="matriz-exemplo">Matriz_exemplo</h1>
+<h1 id="com-os-seus-dados">Com os seus dados:</h1>
+<p>library(tidyverse)</p>
+<p>dados &lt;- data.frame(<br />id = c(1, 2, 3, 4, 5),<br />idade = c(9, 56, 28, 40, 50),<br />sexo = c(&quot;F&quot;, &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, &quot;M&quot;),<br />altura = c(120, 160, 190, 170, 155)<br />)</p>
+<h1 id="opção-2---do-jeito-tidyverse-que-a-gente-vai-usar-no-curso">Opção 2 - do jeito tidyverse (que a gente vai usar no curso)</h1>
+<p>dados &lt;- tribble(<br />~id, ~idade, ~sexo, ~altura,<br />1,   9,      &quot;F&quot;,   120,<br />2,   56,     &quot;M&quot;,   160,<br />3,   28,     &quot;M&quot;,   190,<br />4,   40,     &quot;F&quot;,   170,<br />5,   50,     &quot;M&quot;,   155<br />)</p>
+<p>dados # olha a tabela</p>
+<h1 id="quantas-linhas-pacientes">Quantas linhas? (pacientes)</h1>
+<p>nrow(dados)</p>
+<h1 id="quantas-colunas-variáveis">Quantas colunas? (variáveis)</h1>
+<p>ncol(dados)</p>
+<p>Os dois de uma vez - linhas e colunas.</p>
+<pre><code># Os dois de uma vez - linhas e colunas
+dim(dados)
+</code></pre>
+<h1 id="para-ver-tudo--que-vamos-usar-">Para ver tudo  (que vamos usar )</h1>
+<p>dim(dados) # no SIM com 50 mil linhas é essencial</p>
+<h1 id="do-mais-simples-ao-que--vamos-usar-no-curso">Do mais simples ao que # vamos usar no curso:</h1>
+<h1 id="1-jeito-cifrão-">1. Jeito cifrão $</h1>
+<pre><code>#Jeito cifrão $ 
+dados$idade
+[1] 9 56 28 40 50
+</code></pre>
+<h1 id="2-jeito-colchete---pega-como-tabela-mantém-o-nome-em-cima">2. Jeito colchete - pega como tabela (mantém o nome em cima)</h1>
+<pre><code>#Jeito colchete - pega como #tabela (mantém o nome em #cima)
+dados[&quot;idade&quot;]
+dados[, &quot;idade&quot;]
+</code></pre>
+<h1 id="3-jeito-tidyverse---o-que-vamos-usar-da-aula-2-em-diante">3. Jeito tidyverse - o que vamos usar da Aula 2 em diante</h1>
+<p>library(dplyr)<br />select(dados, idade)</p>
+<h1 id="mais-de-uma-coluna">mais de uma coluna?</h1>
+<pre><code># mais de uma coluna?
+select(dados, idade, altura)
+select(dados, sexo, altura)
+</code></pre>
+<h1 id="apagar-coluna">Apagar coluna</h1>
+<pre><code>#  Só mostra (não salva)
+select(dados, -altura)
+</code></pre>
+<h1 id="2-agora-sim-apaga-e-guarda-no-caderno">2. Agora sim apaga e guarda no caderno</h1>
+<pre><code># 2. Agora sim apaga e guarda no caderno
+dados &lt;- select(dados, -altura)
+</code></pre>
+<h1 id="pronto-agora-se-você-digitar-dados-altura-sumiu">pronto, agora se você digitar dados, altura sumiu</h1>
+<p>dados.</p>
+
+</body>
+</html>
