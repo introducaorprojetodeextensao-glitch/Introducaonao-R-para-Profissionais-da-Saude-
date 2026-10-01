@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta charset="UTF-8">
+ <style type='text/css'>
+      @page {
+          margin: 20px;
+      }
+
+      html,
+      body {
+          padding: 20px;
+          font-family: Roboto, Arial, system, sans-serif;
+          font-size: 12pt;
+          line-height: 1.5;
+      }
+
+      img {
+          display: block;
+          max-width: 100%;
+          height: auto;
+          margin: 20px auto;
+          border: 0.5px solid #000;
+      }
+
+      a {
+          text-decoration: underline;
+          color: blue;
+      }
+
+      video,
+      img {
+          max-width: 100%;
+      }
+
+      pre {
+          max-width: 100%;
+          overflow: auto;
+          background-color: #f5f5f5;
+          padding: 10px;
+          border: 1px solid #ddd;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+      }
+
+      table,
+      th,
+      td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding: 4px;
+      }
+
+      th,
+      td {
+          vertical-align: top;
+      }
+
+      .header_no_underline {
+          text-decoration: none;
+          color: black;
+      }
+
+      h1,
+      h2 {
+          border-bottom: 2px solid #636363;
+          padding-bottom: 4px;
+      }
+
+      blockquote {
+          padding: 0 12px;
+          border-left: 3.5px solid #c4c4c4;
+          margin: 12px 0;
+          color: #555;
+          font-style: italic;
+      }
+
+      .task-list-item {
+          list-style-type: none;
+          text-indent: -1.5em;
+          padding-left: 1.5em;
+      }
+</style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous">
+
+<!-- The loading of KaTeX is deferred to speed up page rendering -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+          ],
+          throwOnError : false
+        });
+    });
+</script>
+ </head>
+<body>
+ <h1 id="exemplo-microdatasus">exemplo microdatasus</h1>
+<h1 id="mais-fácil-para-aula---pelo-próprio-r-recomendado">Mais fácil para aula - pelo próprio R (recomendado)</h1>
+<p>install.packages(&quot;microdatasus&quot;)<br />library(microdatasus)</p>
+<p>#Baixa e já salva na pasta<br />fetch_datasus(<br />year_start = 2023,<br />year_end = 2023,<br />uf = &quot;PB&quot;,<br />information_system = &quot;SIM-DO&quot;<br />)<br />#Ele baixa sozinho do FTP do #DATASUS. Não precisa de link.</p>
+<p>#Link direto do governo - #OpenDataSUS</p>
+<p>#1. Entra em: #<a href="https://opendatasus.saude.gov.br">https://opendatasus.saude.gov.br</a><br />#2. Pesquisa: <code>SIM</code> ou <code>SINASC</code><br />#3. Clica em <code>SIM - Sistema de Informação sobre Mortalidade</code><br />#4. Vai em <code>Recursos</code> &gt; baixa o <code>.csv</code> ou <code>.dbc</code> por UF/ano</p>
+<p>#Link direto do FTP antigo que o pacote usa:<br />#<a href="ftp://ftp.datasus.gov.br/dissemin/publicos/SIM/CID10/DORES/">ftp://ftp.datasus.gov.br/dissemin/publicos/SIM/CID10/DORES/</a></p>
+<h1 id="processa-e-padroniza-os-rótulos-do-sim-converte-códigos-em-textos-compreensíveis">Processa e padroniza os rótulos do SIM (converte códigos em textos compreensíveis)</h1>
+<p>dados_sim_pb &lt;- process_sim(dados_sim_pb)</p>
+<h1 id="visualizar-a-base-do-datasus">Visualizar a base do DATASUS</h1>
+<p>glimpse(dados_sim_pb)</p>
+<h1 id="2-inspeção-----------------------------------------">2. INSPEÇÃO  ---------------------------------------</h1>
+<p>dim(dados_sim_pb)<br />
+names(dados_sim_pb)<br />
+glimpse(dados_sim_pb)<br />
+summary(dados_sim_pb$IDADE)</p>
+<h1 id="quais-variáveis-mais-importantes-do-sim">Quais variáveis mais importantes do SIM?</h1>
+<h1 id="dtóbito-sexo-racacor-codmunres-causabas-linhaa-etc">DTÓBITO, SEXO, RACACOR, CODMUNRES, CAUSABAS, LINHAA, etc.</h1>
+<h1 id="3-organização-------------------------------------">3. ORGANIZAÇÃO  -----------------------------------</h1>
+<h1 id="agora-sim-o-código-justo-que-faltava">Agora sim, o código justo que faltava:</h1>
+<p>dados_sim_limpo &lt;- dados_sim_pb |&gt;<br />janitor::clean_names() |&gt; # padroniza tudo minúsculo<br />select(<br /># Identificação<br />numerodo, tipobito, dtobito,<br /># Pessoa<br />sexo, racacor, idade, dtnasc,<br /># Residência<br />codmunres, codmunocor,<br /># Causa<br />causabas, linhai_a, linhai_b, linhai_c, linhai_d,<br /># Outros<br />escmae, ocup, natural<br />) |&gt;<br />rename(<br />municipio_residencia = codmunres,<br />municipio_ocorrencia = codmunocor,<br />causa_basica = causabas,<br />escolaridade_mae = escmae<br />) |&gt;<br />filter(<br />!is.na(dtobito),          # desafio item 5 - filtrar população válida<br />tipobito == &quot;1&quot;            # só óbitos não fetais<br />) |&gt;<br />mutate(<br />dtobito = lubridate::dmy(dtobito),<br />ano = lubridate::year(dtobito),<br />mes = lubridate::month(dtobito),</p>
+<pre><code># desafio item 6 - criar categórica - ESSENCIAL EM SAÚDE
+faixa_etaria = case_when(
+  idade &lt; 1 ~ &quot;Menor de 1 ano&quot;,
+  idade &gt;= 1 &amp; idade &lt; 10 ~ &quot;1 a 9 anos&quot;,
+  idade &gt;= 10 &amp; idade &lt; 20 ~ &quot;10 a 19 anos&quot;,
+  idade &gt;= 20 &amp; idade &lt; 60 ~ &quot;20 a 59 anos&quot;,
+  idade &gt;= 60 ~ &quot;60 ou mais&quot;,
+  TRUE ~ NA_character_
+),
+
+sexo_label = case_when(
+  sexo == &quot;Masculino&quot; ~ &quot;Masculino&quot;,
+  sexo == &quot;Feminino&quot; ~ &quot;Feminino&quot;,
+  TRUE ~ &quot;Ignorado&quot;
+),
+
+# Causa agrupada - exemplo SUS
+capitulo_cid = substr(causa_basica, 1, 1) # A,B = infecciosas, C,D = neoplasias, etc
+</code></pre>
+<p>)</p>
+<h1 id="4------------------------------------------">4.   ---------------------------------------</h1>
+<h1 id="frequência-simples">Frequência simples</h1>
+<p>dados_sim_limpo |&gt; count(sexo_label, sort = TRUE)</p>
+<p>dados_sim_limpo |&gt; count(faixa_etaria)</p>
+<h1 id="top-10-causas-básicas-na-pb-2023">Top 10 causas básicas na PB 2023</h1>
+<p>dados_sim_limpo |&gt;<br />count(causa_basica, sort = TRUE) |&gt;<br />head(10)</p>
+<h1 id="tabela-cruzada---essencial-para-o-curso-principal">Tabela cruzada - essencial para o curso principal</h1>
+<p>dados_sim_limpo |&gt;<br />group_by(faixa_etaria, sexo_label) |&gt;<br />summarise(<br />total_obitos = n(),<br />.groups = &quot;drop&quot;<br />) |&gt;<br />arrange(desc(total_obitos))</p>
+<h1 id="mortalidade-por-mês---para-vigilância">Mortalidade por mês - para vigilância</h1>
+<p>dados_sim_limpo |&gt;<br />group_by(mes) |&gt;<br />summarise(total = n()) |&gt;<br />arrange(mes)</p>
+<h1 id="5-salvamento-corrigido-com-here---item-8-------------------------------">5. SALVAMENTO CORRIGIDO COM here() - item 8 ------------------------------</h1>
+<p>if(!dir.exists(here(&quot;resultados&quot;))) dir.create(here(&quot;resultados&quot;))</p>
+<p>write_csv(dados_sim_limpo, here(&quot;resultados&quot;, &quot;sim_pb_2023_organizado.csv&quot;))<br />saveRDS(dados_sim_limpo, here(&quot;resultados&quot;, &quot;sim_pb_2023_organizado.rds&quot;))</p>
+<h1 id="também-salva">Também salva</h1>
+<p>dados_sim_limpo |&gt;<br />select(municipio_residencia, sexo_label, faixa_etaria, causa_basica, dtobito) |&gt;<br />write_csv(here(&quot;resultados&quot;, &quot;sim_pb_2023_recorte_encontro2.csv&quot;))</p>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta charset="UTF-8">
+ <style type='text/css'>
+      @page {
+          margin: 20px;
+      }
+
+      html,
+      body {
+          padding: 20px;
+          font-family: Roboto, Arial, system, sans-serif;
+          font-size: 12pt;
+          line-height: 1.5;
+      }
+
+      img {
+          display: block;
+          max-width: 100%;
+          height: auto;
+          margin: 20px auto;
+          border: 0.5px solid #000;
+      }
+
+      a {
+          text-decoration: underline;
+          color: blue;
+      }
+
+      video,
+      img {
+          max-width: 100%;
+      }
+
+      pre {
+          max-width: 100%;
+          overflow: auto;
+          background-color: #f5f5f5;
+          padding: 10px;
+          border: 1px solid #ddd;
+          white-space: pre-wrap;
+          word-wrap: break-word;
+      }
+
+      table,
+      th,
+      td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding: 4px;
+      }
+
+      th,
+      td {
+          vertical-align: top;
+      }
+
+      .header_no_underline {
+          text-decoration: none;
+          color: black;
+      }
+
+      h1,
+      h2 {
+          border-bottom: 2px solid #636363;
+          padding-bottom: 4px;
+      }
+
+      blockquote {
+          padding: 0 12px;
+          border-left: 3.5px solid #c4c4c4;
+          margin: 12px 0;
+          color: #555;
+          font-style: italic;
+      }
+
+      .task-list-item {
+          list-style-type: none;
+          text-indent: -1.5em;
+          padding-left: 1.5em;
+      }
+</style>
+ </head>
+<body>
+ <h1 id="desafio-final">Desafio Final</h1>
+<p>De onde vêm estes dados<br />Diferente do resto do curso (que usa exemplos fictícios), aqui<br />usamos um dado REAL: o cadastro de Unidades Básicas de Saúde (UBS)<br />do Brasil inteiro, baixado do Portal de Dados Abertos do SUS.<br />Para baixar você mesmo(a):</p>
+<h4 id="1-acesse-httpsdadosabertossaudegovbrdataset">1. Acesse <a href="https://dadosabertos.saude.gov.br/dataset">https://dadosabertos.saude.gov.br/dataset</a></h4>
+<h3 id="2-use-o-filtro-formatos-na-lateral-e-escolha-csv">2. Use o filtro &quot;Formatos&quot; na lateral e escolha CSV</h3>
+<h3 id="3-procure-o-conjunto-unidades-básicas-de-saúde-ubs">3. Procure o conjunto &quot;Unidades Básicas de Saúde (UBS)&quot;</h3>
+<h3 id="4-baixe-o-arquivo-zip-e-extraia-o-csv">4. Baixe o arquivo .zip e extraia o .csv</h3>
+<p>O processo de importação no R é sempre o mesmo, seja qual for a base que você baixar  só muda o nome do arquivo.</p>
+<pre><code>#Desafio Final 
+# 1. importar
+dados &lt;- read_csv(here(&quot;dados&quot;, &quot;Mortalidade_Geral_2026.csv&quot;))
+
+# 2. dimensões
+dim(dados)
+
+# 3. nomes e tipos
+names(dados)
+glimpse(dados)
+
+# 4. selecionar
+dados_sel &lt;- dados |&gt; select(id, idade, sexo, municipio, desfecho)
+
+# 5. filtrar
+dados_sel &lt;- dados_sel |&gt; filter(idade &gt;= 18)
+
+# 6. criar categórica
+dados_sel &lt;- dados_sel |&gt; 
+  mutate(faixa_etaria = case_when(
+    idade &lt; 30 ~ &quot;18-29&quot;,
+    idade &lt; 60 ~ &quot;30-59&quot;,
+    idade &gt;= 60 ~ &quot;60 ou mais&quot;,
+    TRUE ~ NA_character_
+  ))
+
+# 7. frequências
+dados_sel |&gt; count(sexo)
+dados_sel |&gt; count(faixa_etaria)
+
+# 8. salvar - CORRIGIDO com here()
+write_csv(dados_sel, here(&quot;resultados&quot;, &quot;dados_organizados.csv&quot;))
+saveRDS(dados_sel, here(&quot;resultados&quot;, &quot;dados_organizados.rds&quot;))
+
+</code></pre>
+
+</body>
+</html>
